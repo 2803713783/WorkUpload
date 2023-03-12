@@ -1,0 +1,2 @@
+Application Version: ${siyi.version}
+Spring Boot Version: ${spring-boot.version}

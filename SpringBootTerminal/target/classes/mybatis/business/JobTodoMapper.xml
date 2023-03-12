@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.siyi.project.business.mapper.JobTodoMapper">
+    
+    <resultMap type="JobTodo" id="JobTodoResult">
+        <result property="jobId"    column="job_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="worksSrc"    column="works_src"    />
+        <result property="worksBrief"    column="works_brief"    />
+        <result property="worksDescription"    column="works_description"    />
+        <result property="worksType"    column="works_type"    />
+        <result property="worksSort"    column="works_sort"    />
+        <result property="worksCover"    column="works_cover"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectJobTodoVo">
+        select job_id, user_id, works_src, works_brief, works_description, works_type, works_sort, works_cover, status, create_by, create_time, update_by, update_time, remark from bus_job_todo
+    </sql>
+
+    <select id="selectJobTodoList" parameterType="JobTodo" resultMap="JobTodoResult">
+        <include refid="selectJobTodoVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="worksSrc != null  and worksSrc != ''"> and works_src = #{worksSrc}</if>
+            <if test="worksBrief != null  and worksBrief != ''"> and works_brief = #{worksBrief}</if>
+            <if test="worksDescription != null  and worksDescription != ''"> and works_description = #{worksDescription}</if>
+            <if test="worksType != null "> and works_type = #{worksType}</if>
+            <if test="worksSort != null "> and works_sort = #{worksSort}</if>
+            <if test="worksCover != null  and worksCover != ''"> and works_cover = #{worksCover}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectJobTodoByJobId" parameterType="Long" resultMap="JobTodoResult">
+        <include refid="selectJobTodoVo"/>
+        where job_id = #{jobId}
+    </select>
+        
+    <insert id="insertJobTodo" parameterType="JobTodo">
+        insert into bus_job_todo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jobId != null">job_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="worksSrc != null and worksSrc != ''">works_src,</if>
+            <if test="worksBrief != null and worksBrief != ''">works_brief,</if>
+            <if test="worksDescription != null and worksDescription != ''">works_description,</if>
+            <if test="worksType != null">works_type,</if>
+            <if test="worksSort != null">works_sort,</if>
+            <if test="worksCover != null and worksCover != ''">works_cover,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jobId != null">#{jobId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="worksSrc != null and worksSrc != ''">#{worksSrc},</if>
+            <if test="worksBrief != null and worksBrief != ''">#{worksBrief},</if>
+            <if test="worksDescription != null and worksDescription != ''">#{worksDescription},</if>
+            <if test="worksType != null">#{worksType},</if>
+            <if test="worksSort != null">#{worksSort},</if>
+            <if test="worksCover != null and worksCover != ''">#{worksCover},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJobTodo" parameterType="JobTodo">
+        update bus_job_todo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="worksSrc != null and worksSrc != ''">works_src = #{worksSrc},</if>
+            <if test="worksBrief != null and worksBrief != ''">works_brief = #{worksBrief},</if>
+            <if test="worksDescription != null and worksDescription != ''">works_description = #{worksDescription},</if>
+            <if test="worksType != null">works_type = #{worksType},</if>
+            <if test="worksSort != null">works_sort = #{worksSort},</if>
+            <if test="worksCover != null and worksCover != ''">works_cover = #{worksCover},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where job_id = #{jobId}
+    </update>
+
+    <delete id="deleteJobTodoByJobId" parameterType="Long">
+        delete from bus_job_todo where job_id = #{jobId}
+    </delete>
+
+    <delete id="deleteJobTodoByJobIds" parameterType="String">
+        delete from bus_job_todo where job_id in 
+        <foreach item="jobId" collection="array" open="(" separator="," close=")">
+            #{jobId}
+        </foreach>
+    </delete>
+</mapper>

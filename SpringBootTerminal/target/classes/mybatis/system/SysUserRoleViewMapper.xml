@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.siyi.project.system.mapper.SysUserRoleViewMapper">
+
+    <resultMap type="SysUserRoleView" id="SysUserRoleViewResult">
+        <result property="userId"    column="user_id"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="roleName"    column="role_name"    />
+    </resultMap>
+
+    <sql id="selectSysUserRoleViewVo">
+        select user_id, role_id, user_name, nick_name, role_name from sys_user_role_view
+    </sql>
+
+    <select id="selectSysUserRoleViewList" parameterType="SysUserRoleView" resultMap="SysUserRoleViewResult">
+        <include refid="selectSysUserRoleViewVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="roleName != null  and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectSysUserRoleViewByUserId" parameterType="Long" resultMap="SysUserRoleViewResult">
+        <include refid="selectSysUserRoleViewVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertSysUserRoleView" parameterType="SysUserRoleView">
+        insert into sys_user_role_view
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="nickName != null and nickName != ''">nick_name,</if>
+            <if test="roleName != null and roleName != ''">role_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="nickName != null and nickName != ''">#{nickName},</if>
+            <if test="roleName != null and roleName != ''">#{roleName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysUserRoleView" parameterType="SysUserRoleView">
+        update sys_user_role_view
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSysUserRoleViewByUserId" parameterType="Long">
+        delete from sys_user_role_view where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysUserRoleViewByUserIds" parameterType="String">
+        delete from sys_user_role_view where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>
