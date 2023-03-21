@@ -202,7 +202,7 @@
           <el-input v-model="form.userId" placeholder="请输入用户ID" />
         </el-form-item>
         <el-form-item label="作品地址" prop="worksSrc">
-          <file-upload v-model="form.worksSrc" :webkitdirectoryIf="true" />
+          <folder-upload v-model="form.worksSrc"  />
         </el-form-item>
         <el-form-item label="作品简介" prop="worksBrief">
           <el-input v-model="form.worksBrief" placeholder="请输入作品简介" />
@@ -424,7 +424,7 @@ function resetQuery() {
 // 多选框选中数据
 function handleSelectionChange(selection) {
   ids.value = selection.map((item) => item.jobId);
-  single.value = selection.length != 1;
+  single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 
