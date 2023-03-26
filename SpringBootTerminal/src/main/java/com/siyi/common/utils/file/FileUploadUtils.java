@@ -247,10 +247,10 @@ public class FileUploadUtils
             System.out.println("basePath:"+signPath);
             signPath = signPath.substring(0, signPath.length() - 1);
         }
-        String basePath = SiYiConfig.getUploadPath();
+        String basePath = SiYiConfig.getUploadPath()+"/"+signPath;
         for (MultipartFile file : files) {
             String relativePath = file.getOriginalFilename();
-            String filePath = basePath + "/" +signPath+"/"+ relativePath;
+            String filePath = basePath +"/"+ relativePath;
             System.out.println(filePath);
 //            FileUploadUtils.upload(filePath, file);
             makeDir(filePath);

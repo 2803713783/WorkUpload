@@ -131,17 +131,18 @@ public class CommonController {
     /**
      * 通用上传请求（文件夹）
      */
+    //=====================================================================
     @ResponseBody
     @PostMapping(value = "/uploadFolder")
-    public AjaxResult uploadFolder(@RequestParam MultipartFile[] file) {
-        System.out.println("folder:"+Arrays.toString(file));
+    public AjaxResult uploadFolder(@RequestParam(value = "file") MultipartFile[] files) {
+        System.out.println("folder:"+Arrays.toString(files));
         try {
-            FileUploadUtils.saveMultiFile(file, "siyi/web前端/html练习1");
+            FileUploadUtils.saveMultiFile(files, "siyi/web前端/html练习1");
             AjaxResult ajax = AjaxResult.success();
-            ajax.put("urls", StringUtils.join(file, FILE_DELIMETER));
+            ajax.put("urls", StringUtils.join(files, FILE_DELIMETER));
             return ajax;
         } catch (Exception e) {
-            System.out.println("folder:"+Arrays.toString(file));
+            System.out.println("folder:"+Arrays.toString(files));
             return AjaxResult.error(e.getMessage());
         }
     }

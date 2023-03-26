@@ -186,57 +186,69 @@
     />
 
     <!-- 添加或修改作业上传对话框 -->
-    <el-dialog :title="title" v-model="open" width="700px" append-to-body>
+    <el-dialog :title="title" v-model="open" width="1000px" append-to-body>
       <el-form ref="jobTodoRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="作业选择" prop="jobId">
-          <el-select v-model="form.jobId" placeholder="请选择作业">
-            <el-option
-              v-for="job in jobList"
-              :key="job.jobId"
-              :label="job.jobName"
-              :value="job.jobId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户ID" />
-        </el-form-item>
-        <el-form-item label="作品地址" prop="worksSrc">
-          <folder-upload v-model="form.worksSrc"  />
-        </el-form-item>
-        <el-form-item label="作品简介" prop="worksBrief">
-          <el-input v-model="form.worksBrief" placeholder="请输入作品简介" />
-        </el-form-item>
-        <el-form-item label="作品描述" prop="worksDescription">
-          <el-input
-            v-model="form.worksDescription"
-            type="textarea"
-            placeholder="请输入内容"
-          />
-        </el-form-item>
-        <el-form-item label="作品类型" prop="worksType">
-          <el-select v-model="form.worksType" placeholder="请选择作品类型">
-            <el-option
-              v-for="dict in user_works_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="显示顺序" prop="worksSort">
+        <el-row :gutter="30">
+          <el-col :span="12">
+            <el-form-item label="作业选择" prop="jobId">
+              <el-select v-model="form.jobId" placeholder="请选择作业">
+                <el-option
+                  v-for="job in jobList"
+                  :key="job.jobId"
+                  :label="job.jobName"
+                  :value="job.jobId"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="作品地址" prop="worksSrc">
+              <folder-upload ref="uploadFiles" v-model="form.worksSrc" />
+            </el-form-item>
+            <el-button type="primary" @click="showUploadFiles">
+              listFiles</el-button
+            >
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="用户ID" prop="userId">
+              <el-input v-model="form.userId" placeholder="请输入用户ID" />
+            </el-form-item>
+
+            <el-form-item label="作品简介" prop="worksBrief">
+              <el-input
+                v-model="form.worksBrief"
+                placeholder="请输入作品简介"
+              />
+            </el-form-item>
+            <el-form-item label="作品描述" prop="worksDescription">
+              <el-input
+                v-model="form.worksDescription"
+                type="textarea"
+                placeholder="请输入内容"
+              />
+            </el-form-item>
+            <el-form-item label="作品类型" prop="worksType">
+              <el-select v-model="form.worksType" placeholder="请选择作品类型">
+                <el-option
+                  v-for="dict in user_works_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- <el-form-item label="显示顺序" prop="worksSort">
           <el-input v-model="form.worksSort" placeholder="请输入显示顺序" />
         </el-form-item> -->
-        <el-form-item label="封面图片" prop="worksCover">
-          <image-upload v-model="form.worksCover" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="form.remark"
-            type="textarea"
-            placeholder="请输入内容"
-          />
-        </el-form-item>
+            <el-form-item label="封面图片" prop="worksCover">
+              <image-upload v-model="form.worksCover" />
+            </el-form-item>
+            <el-form-item label="备注" prop="remark">
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入内容"
+              /> </el-form-item
+          ></el-col>
+        </el-row>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -271,7 +283,6 @@ const total = ref(0);
 const title = ref("");
 const jobList = ref([]);
 const jobTotal = ref(0);
-
 const data = reactive({
   form: {},
   queryParams: {
@@ -349,8 +360,13 @@ const data = reactive({
     ],
   },
 });
-
+const uploadFiles = ref();
 const { queryParams, form, rules, jobParams } = toRefs(data);
+
+const showUploadFiles = () => {
+  let temp = uploadFiles.value.returnMyUploadList();
+  console.log(temp);
+};
 
 /** 查询作业上传列表 */
 function getList() {

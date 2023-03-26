@@ -40,6 +40,8 @@ import Pagination from "@/components/Pagination";
 import RightToolbar from "@/components/RightToolbar";
 // 文件上传组件
 import FileUpload from "@/components/FileUpload";
+// 文件夹上传组件
+import FolderUpload from "@/components/FolderUpload";
 // 图片上传组件
 import ImageUpload from "@/components/ImageUpload";
 // 图片预览组件
@@ -66,6 +68,7 @@ app.component("DictTag", DictTag);
 app.component("Pagination", Pagination);
 app.component("TreeSelect", TreeSelect);
 app.component("FileUpload", FileUpload);
+app.component("FolderUpload", FolderUpload);
 app.component("ImageUpload", ImageUpload);
 app.component("ImagePreview", ImagePreview);
 app.component("RightToolbar", RightToolbar);

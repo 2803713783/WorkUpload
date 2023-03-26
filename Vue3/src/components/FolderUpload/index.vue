@@ -15,14 +15,15 @@
       class="upload-file-uploader"
       ref="fileUpload"
       :auto-upload="false"
-      :on-preview="handlePreview"
       :drag="true"
     >
       <!-- 上传按钮 -->
       <el-button type="primary">选取文件</el-button>
-<!--      <el-button type="primary">打印值</el-button>-->
-
+      <!--      <el-button type="primary">打印值</el-button>-->
     </el-upload>
+    <el-button class="ml-3" type="success" @click="submitUpload">
+      upload to server
+    </el-button>
     <!-- 上传提示 -->
     <div class="el-upload__tip" v-if="showTip">
       请上传
@@ -63,9 +64,10 @@
 </template>
 
 <script setup>
+import { folderUpload } from "@/api/business/folderUpload";
 import { getToken } from "@/utils/auth";
-import {nextTick, ref} from "vue";
-import { toRaw } from '@vue/reactivity'
+import { nextTick, ref, defineExpose } from "vue";
+import { toRaw } from "@vue/reactivity";
 const props = defineProps({
   modelValue: [String, Object, Array],
   // 数量限制
@@ -115,14 +117,17 @@ const props = defineProps({
 const { proxy } = getCurrentInstance();
 const emit = defineEmits();
 const number = ref(0);
-
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
-const uploadFileUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/uploadFolder")
+const uploadFileUrl = ref(
+  import.meta.env.VITE_APP_BASE_API + "/common/uploadFolder"
+);
 // 上传文件服务器地址
 
 const headers = ref({ Authorization: "Bearer " + getToken() });
-const fileList = ref([]);//用来展示的
-const uploadList = ref([]);//用来上传的
+const fileList = ref([]); //用来展示的
+const uploadList = ref([]);
+let myFolderList = [];
+//用来上传的
 const showTip = computed(
   () => props.isShowTip && (props.fileType || props.fileSize)
 );
@@ -154,26 +159,36 @@ watch(
   { deep: true, immediate: true }
 );
 
-
-//选择文件后;
-const handlePreview = (file) => {
-
-};
-
 //文件状态改变
 const handleChange = (file, UploadFiles) => {
-   // console.log("UploadFiles:", UploadFiles);
-   let temp =toRaw(UploadFiles);
-   console.log(temp)
-  uploadList.value=[]
-  temp.forEach(function (e){
-      uploadList.value.push(e.raw)
-   })
-  console.log('uploadList:',uploadList.value)
+  // console.log("UploadFiles:", UploadFiles);
+  let temp = toRaw(UploadFiles);
+  // console.log(temp);
+  // myFolderList = new fileList();
+  myFolderList = [];
+  temp.forEach(function (e) {
+    myFolderList.push(e.raw);
+  });
+};
+const returnMyUploadList = () => {
+  return myFolderList;
 };
 //上传文件前;
 const before_upload = (file) => {
   // console.log("file:", file);
+};
+const submitUpload = () => {
+  if (myFolderList != []) {
+    const files = new FormData();
+    myFolderList.forEach((e) => {
+      files.append("file", e);
+    });
+
+    folderUpload(files).then((response) => {
+      proxy.$modal.msgSuccess("上传成功");
+      open.value = false;
+    });
+  }
 };
 // 上传失败
 function handleUploadError(err) {
@@ -196,14 +211,14 @@ function handleUploadSuccess(res, file) {
 // 上传前校检格式和大小
 function handleBeforeUpload(file) {
   // 校检文件类型
-  console.log("check")
+  console.log("check");
   if (props.fileType.length) {
     const fileName = file.name.split(".");
     const fileExt = fileName[fileName.length - 1];
     const isTypeOk = props.fileType.indexOf(fileExt) >= 0;
     if (!isTypeOk) {
       proxy.$modal.msgError(
-          `文件格式不正确, 请上传${props.fileType.join("/")}格式文件!`
+        `文件格式不正确, 请上传${props.fileType.join("/")}格式文件!`
       );
       return false;
     }
@@ -227,7 +242,7 @@ function handleExceed() {
 }
 // 删除文件
 function handleDelete(index) {
-  console.log("fileList.value",fileList.value)
+  console.log("fileList.value", fileList.value);
   fileList.value.splice(index, 1);
   emit("update:modelValue", listToString(fileList.value));
 }
@@ -265,6 +280,7 @@ function listToString(list, separator) {
   }
   return strs != "" ? strs.substr(0, strs.length - 1) : "";
 }
+defineExpose({ returnMyUploadList });
 </script>
 
 <style scoped lang="scss">

@@ -1,7 +1,10 @@
 package com.siyi.project.business.controller;
 
+import java.io.File;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.siyi.common.utils.file.FileUploadUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import com.siyi.framework.web.controller.BaseController;
 import com.siyi.framework.web.domain.AjaxResult;
 import com.siyi.common.utils.poi.ExcelUtil;
 import com.siyi.framework.web.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 作业上传Controller
@@ -75,8 +79,17 @@ public class JobTodoController extends BaseController
     @PreAuthorize("@ss.hasPermi('business:jobTodo:add')")
     @Log(title = "作业上传", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody JobTodo jobTodo)
+    public AjaxResult add(@RequestBody JobTodo jobTodo, MultipartFile[] files, String signPath)
     {
+        StringBuffer tempSrc = new StringBuffer("");
+        for (int i = 0; i < files.length; i++) {
+            tempSrc.append(files[i].getOriginalFilename());
+            if (i!= files.length-1){
+                tempSrc.append(",");
+            }
+        }
+        jobTodo.setWorksSrc(String.valueOf(tempSrc));
+        FileUploadUtils.saveMultiFile(files,signPath);
         return toAjax(jobTodoService.insertJobTodo(jobTodo));
     }
 
